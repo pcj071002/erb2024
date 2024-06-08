@@ -1,0 +1,77 @@
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<h1>숫자 맞추기</h1>
+<div id="mydiv">1부터 100 사이의 숫자 입력</div>
+<input id="datain">
+<button onclick="my()"> 확인 </button>
+<canvas id="mychart"></canvas>
+<script>
+    let answer = Math.floor(Math.random() * 100) + 1;
+    let mydiv = document.querySelector("#mydiv");
+    let num = document.querySelector("#datain");
+    let try_num = 0;
+    const MAX_TRY = 5;
+    let num_in = [], ans_data = [], labels = [];
+
+    function my() {
+        mydiv.innerHTML += "<br>입력한 값은 " + num.value + "이야?";
+        let inum = Number(num.value);
+        if (inum <= 0 || inum > 100) {
+            mydiv.innerHTML += "<br>'1~100 사이의 숫자'를 입력하도록 해.";
+            return;
+        }
+        num_in.push(inum);
+        try_num++;
+
+        if (try_num >= MAX_TRY) {
+            mydiv.innerHTML += "<br>숫자 맞추기는 끝이야. 역시 멍청하네.";
+            makechart();
+            return;
+        }
+
+        if (answer === inum) {
+            mydiv.innerHTML += "<br>정답. " + try_num + "번 만에 맞췄네. 축하해.";
+            makechart();
+            return;
+        } else if (answer < inum) {
+            mydiv.innerHTML += "<br>그건 답이 아니야. 더 작은 값을 입력하도록 해. " + "현재 시도 횟수는 " + try_num + "번이야.";
+        } else if (answer > inum) {
+            mydiv.innerHTML += "<br>그건 답이 아니야. 더 큰 값을 입력도록 해. " + "현재 시도 횟수는 " + try_num + "번이야.";
+        }
+    }
+
+    function makechart() {
+        let datainfo = {
+            labels: Array.from(Array(num_in.length).keys()).map(x => x + 1),
+            datasets: [
+                {
+                    label: "answer",
+                    backgroundColor: ['gray', 'red'],
+                    borderColor: 'blue',
+                    data: Array(num_in.length).fill(answer),
+                    tension: 0.5
+                },
+                {
+                    label: "inputData",
+                    backgroundColor: ['gray', 'green'],
+                    borderColor: 'red',
+                    data: num_in,
+                    tension: 0.5
+                }
+            ]
+        };
+
+        let config = {
+            type: "line",
+            data: datainfo,
+            options: {}
+        };
+
+        new Chart(document.getElementById('mychart'), config);
+    }
+</script>
+</body>
+</html>
